@@ -32,7 +32,7 @@ test('crear o actualizar suscriptor: POST a la lista con consent_source, sin cam
 
 test('enviar mensaje con plantilla: destinatarios como arreglo y variables', async () => {
   const { ctx, calls } = executeContext({
-    params: { resource: 'message', to: 'a@example.com, b@example.com', content: 'template', templateId: 'tpl-1', variables: '{"code":"482913"}', subject: '', messageFields: {} },
+    params: { resource: 'message', to: 'a@example.com, b@example.com', content: 'template', templateId: 'tpl-1', variablesUi: { variable: [{ name: 'code', value: '482913' }, { name: '  ', value: 'ignored' }] }, subject: '', messageFields: {} },
     responder: () => ({ id: 'm1', status: 'sent', recipients: 2, suppressed: [], delivery_id: 'd1' }),
   })
   await node.execute.call(ctx)

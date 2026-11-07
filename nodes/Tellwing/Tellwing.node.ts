@@ -22,7 +22,8 @@ export class Tellwing implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Tellwing',
 		name: 'tellwing',
-		icon: 'file:tellwing.svg',
+		// Claro y oscuro: n8n pinta el que corresponde al tema del editor (verificación de nodos de comunidad).
+		icon: { light: 'file:tellwing.svg', dark: 'file:tellwing.dark.svg' },
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -31,6 +32,8 @@ export class Tellwing implements INodeType {
 		inputs: [NodeConnectionTypes.Main],
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'tellwingApi', required: true }],
+		// Lo puede usar un agente de IA de n8n como herramienta (lo exige el lint de verificación).
+		usableAsTool: true,
 		properties: [
 			{
 				displayName: 'Resource',
@@ -189,12 +192,26 @@ export class Tellwing implements INodeType {
 				displayOptions: { show: { resource: ['message'], content: ['template'] } },
 			},
 			{
-				displayName: 'Variables (JSON)',
-				name: 'variables',
-				type: 'json',
-				default: '{}',
-				description: 'Values for the template merge fields, e.g. {"code": "482913"}',
+				// Pares nombre/valor en vez de un JSON libre: lo recomienda la verificación de n8n y es
+				// más fácil de llenar (y de mapear con expresiones) para quien no escribe JSON.
+				displayName: 'Variables',
+				name: 'variablesUi',
+				type: 'fixedCollection',
+				typeOptions: { multipleValues: true },
+				placeholder: 'Add Variable',
+				default: {},
+				description: 'Values for the template merge fields, e.g. code = 482913',
 				displayOptions: { show: { resource: ['message'], content: ['template'] } },
+				options: [
+					{
+						displayName: 'Variable',
+						name: 'variable',
+						values: [
+							{ displayName: 'Name', name: 'name', type: 'string', default: '', description: 'Merge field name, without braces' },
+							{ displayName: 'Value', name: 'value', type: 'string', default: '' },
+						],
+					},
+				],
 			},
 			{
 				displayName: 'Subject',
@@ -360,8 +377,10 @@ async function sendMessage(this: IExecuteFunctions, i: number): Promise<IDataObj
 	})
 	if (content === 'template') {
 		body.template_id = this.getNodeParameter('templateId', i) as string
-		const variables = parseJsonObject(this.getNodeParameter('variables', i, '{}'), 'Variables')
-		if (variables && Object.keys(variables).length) body.variables = variables
+		const pairs = ((this.getNodeParameter('variablesUi', i, {}) as IDataObject).variable ?? []) as Array<{ name?: string; value?: string }>
+		const variables: IDataObject = {}
+		for (const { name, value } of pairs) if (name && name.trim()) variables[name.trim()] = value ?? ''
+		if (Object.keys(variables).length) body.variables = variables
 	} else {
 		Object.assign(body, compact({ html: this.getNodeParameter('html', i, '') as string, text: this.getNodeParameter('text', i, '') as string }))
 		if (!body.html && !body.text) throw new NodeOperationError(this.getNode(), 'Write the HTML or the text of the message', { itemIndex: i })

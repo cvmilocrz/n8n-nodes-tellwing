@@ -24,7 +24,8 @@ export class TellwingTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Tellwing Trigger',
 		name: 'tellwingTrigger',
-		icon: 'file:tellwing.svg',
+		// Claro y oscuro: n8n pinta el que corresponde al tema del editor (verificación de nodos de comunidad).
+		icon: { light: 'file:tellwing.svg', dark: 'file:tellwing.dark.svg' },
 		group: ['trigger'],
 		version: 1,
 		subtitle: '={{$parameter["events"].join(", ")}}',

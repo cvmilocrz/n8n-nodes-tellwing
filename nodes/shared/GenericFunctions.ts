@@ -46,7 +46,7 @@ export async function tellwingRequest(
 	body?: IDataObject,
 	qs?: IDataObject,
 	options: { ignoreHttpStatusErrors?: boolean; returnFullResponse?: boolean } = {},
-): Promise<any> {
+): Promise<IDataObject> {
 	const credentials = await this.getCredentials('tellwingApi')
 	const baseUrl = String(credentials.baseUrl || DEFAULT_BASE_URL).replace(/\/+$/, '')
 	const request: IHttpRequestOptions = {

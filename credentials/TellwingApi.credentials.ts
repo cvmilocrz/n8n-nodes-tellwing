@@ -10,7 +10,7 @@ export class TellwingApi implements ICredentialType {
 
 	displayName = 'Tellwing API'
 
-	icon = 'file:tellwing.svg' as const
+	icon = { light: 'file:tellwing.svg', dark: 'file:tellwing.dark.svg' } as const
 
 	documentationUrl = 'https://tellwing.com/docs'
 
