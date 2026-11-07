@@ -2,6 +2,8 @@ name: Publish to npm
 
 # Publishes n8n-nodes-tellwing to npm with provenance, as required for verified n8n community nodes.
 # Authentication uses npm trusted publishing (OIDC): no npm token is stored in this repository.
+# The trusted publisher only allows staged publishing: the version waits on npmjs.com until a
+# maintainer approves it with 2FA (`npm stage approve` or the website).
 # Trigger: publishing a GitHub release whose tag matches the version in package.json (e.g. v0.1.1).
 
 on:
@@ -24,11 +26,11 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      # Trusted publishing needs npm 11.5.1 or later.
+      # Staged publishing needs npm 11.15.0 or later.
       - run: npm install -g npm@latest
 
       - run: npm ci
 
       - run: npm test
 
-      - run: npm publish --provenance --access public
+      - run: npm stage publish --provenance --access public
