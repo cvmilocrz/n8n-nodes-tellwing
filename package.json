@@ -1,0 +1,54 @@
+{
+  "name": "n8n-nodes-tellwing",
+  "version": "0.1.1",
+  "description": "Tellwing for n8n: create or update subscribers, send transactional email, record events and trigger workflows from Tellwing webhooks.",
+  "keywords": [
+    "n8n-community-node-package",
+    "tellwing",
+    "email",
+    "newsletter",
+    "automation"
+  ],
+  "license": "MIT",
+  "homepage": "https://tellwing.com/docs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cvmilocrz/n8n-nodes-tellwing.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cvmilocrz/n8n-nodes-tellwing/issues"
+  },
+  "author": {
+    "name": "Tellwing",
+    "email": "support@tellwing.com"
+  },
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.15"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "test": "npm run build && node --test \"test/*.test.js\""
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/TellwingApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Tellwing/Tellwing.node.js",
+      "dist/nodes/TellwingTrigger/TellwingTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "n8n-workflow": "2.16.0",
+    "typescript": "5.9.3"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
